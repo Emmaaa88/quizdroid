@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/settings_category">
+        <EditTextPreference
+            android:key="questions_url"
+            android:title="@string/questions_url_title"
+            android:summary="@string/questions_url_summary"
+            android:defaultValue="http://tednewardsandbox.site44.com/questions.json" />
+
+        <EditTextPreference
+            android:key="update_frequency"
+            android:title="@string/update_frequency_title"
+            android:summary="@string/update_frequency_summary"
+            android:inputType="number"
+            android:defaultValue="1440" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

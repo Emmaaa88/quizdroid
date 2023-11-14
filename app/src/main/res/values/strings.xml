@@ -4,4 +4,9 @@
     <string name="finish">Finish</string>
     <string name="score_text">You have %1$d out of %2$d correct</string>
     <string name="topic_icon_desc">topic icon</string>
+    <string name="settings_category">Settings</string>
+    <string name="questions_url_title">Questions URL</string>
+    <string name="questions_url_summary">URL to fetch questions from</string>
+    <string name="update_frequency_title">Update Frequency (minutes)</string>
+    <string name="update_frequency_summary">How often to check for updates</string>
 </resources>
