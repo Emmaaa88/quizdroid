@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">quizdroid</string>
+    <string name="next">Next</string>
+    <string name="finish">Finish</string>
+    <string name="score_text">You have %1$d out of %2$d correct</string>
+
+</resources>
