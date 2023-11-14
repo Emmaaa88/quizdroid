@@ -13,16 +13,20 @@ import android.view.View
 
 class QuestionActivity : AppCompatActivity() {
     private var currentQuestionIndex = 0
-    private lateinit var questions: List<Question>
-    private lateinit var topicName: String
+    private lateinit var questions: List<Quiz>
+    private var topicId: Int = 0
     private var score = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
 
-        topicName = intent.getStringExtra("TOPIC_NAME") ?: return
-        questions = QuizData.quizzes[topicName] ?: return
+        // Assuming that the topic ID is passed as an intent extra
+        topicId = intent.getIntExtra("TOPIC_ID", -1)
+        if (topicId == -1) finish() // If there's no valid topic ID, end the activity
+
+        // Use the repository to fetch questions for the topic
+        questions = QuizApp.instance.repository.getQuizzesForTopic(topicId)
         currentQuestionIndex = intent.getIntExtra("QUESTION_INDEX", 0)
 
         displayQuestion(currentQuestionIndex)
@@ -45,51 +49,58 @@ class QuestionActivity : AppCompatActivity() {
             }
         }
 
-        // Handle the "back" button to navigate to the previous question or topic list
         val backButton: Button = findViewById(R.id.backButton)
         backButton.setOnClickListener {
             if (currentQuestionIndex > 0) {
-                // If not the first question, go to the previous question
-                val intent = Intent(this, QuestionActivity::class.java).apply {
-                    putExtra("TOPIC_NAME", topicName)
-                    putExtra("QUESTION_INDEX", currentQuestionIndex - 1)
-                }
-                startActivity(intent)
-                finish()
+                // Navigate to the previous question
+                navigateToQuestion(currentQuestionIndex - 1)
             } else {
-                // If the first question, return to the topic list
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+                // Return to the topic list
                 finish()
             }
         }
     }
 
     private fun displayQuestion(questionIndex: Int) {
-        val question = questions[questionIndex]
-        findViewById<TextView>(R.id.questionTextView).text = question.text
+        val question = questions[questionIndex].questionText
+        findViewById<TextView>(R.id.questionTextView).text = question
 
         val radioGroup: RadioGroup = findViewById(R.id.radioGroup)
         radioGroup.clearCheck()
-        radioGroup.findViewById<RadioButton>(R.id.option1).text = question.options[0]
-        radioGroup.findViewById<RadioButton>(R.id.option2).text = question.options[1]
-        radioGroup.findViewById<RadioButton>(R.id.option3).text = question.options[2]
-        radioGroup.findViewById<RadioButton>(R.id.option4).text = question.options[3]
+        val answers = questions[questionIndex].answers
+        radioGroup.findViewById<RadioButton>(R.id.option1).text = answers[0]
+        radioGroup.findViewById<RadioButton>(R.id.option2).text = answers[1]
+        radioGroup.findViewById<RadioButton>(R.id.option3).text = answers[2]
+        radioGroup.findViewById<RadioButton>(R.id.option4).text = answers[3]
     }
 
-    // When submitting an answer, check if it's correct and increment the score
     private fun submitAnswer(selectedOptionIndex: Int) {
         val correctAnswerIndex = questions[currentQuestionIndex].correctAnswerIndex
         if (selectedOptionIndex == correctAnswerIndex) {
             score++
         }
 
+        navigateToAnswer(selectedOptionIndex)
+    }
+
+    private fun navigateToQuestion(questionIndex: Int) {
+        val intent = Intent(this, QuestionActivity::class.java).apply {
+            putExtra("TOPIC_ID", topicId)
+            putExtra("QUESTION_INDEX", questionIndex)
+            putExtra("SCORE", score) // Pass along the current score
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToAnswer(selectedOptionIndex: Int) {
         val intent = Intent(this, AnswerActivity::class.java).apply {
             putExtra("SELECTED_ANSWER_INDEX", selectedOptionIndex)
             putExtra("QUESTION_INDEX", currentQuestionIndex)
-            putExtra("TOPIC_NAME", topicName)
-            putExtra("SCORE", score) // Pass the updated cumulative score
+            putExtra("TOPIC_ID", topicId)
+            putExtra("SCORE", score)
         }
         startActivity(intent)
+        finish()
     }
 }

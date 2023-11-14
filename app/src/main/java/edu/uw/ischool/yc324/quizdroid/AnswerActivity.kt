@@ -10,21 +10,27 @@ class AnswerActivity : AppCompatActivity() {
 
     private var currentQuestionIndex = 0
     private var score = 0
-    private var totalCorrectAnswers = 0 // 答对的总数
-    private lateinit var currentTopic: String
-    private lateinit var questions: List<Question>
+    private var totalCorrectAnswers = 0 // Total number of correct answers
+    private lateinit var questions: List<Quiz>
+    private var topicId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_answer)
 
-        // Retrieve current question index, score, and topic from the intent
+        // Retrieve the topic ID, current question index, and score from the intent
         currentQuestionIndex = intent.getIntExtra("QUESTION_INDEX", 0)
         score = intent.getIntExtra("SCORE", 0) // The score is received from the previous activity
-        currentTopic = intent.getStringExtra("TOPIC_NAME") ?: "Math"
+        topicId = intent.getIntExtra("TOPIC_ID", -1)
 
-        // Get the questions for the current topic
-        questions = QuizData.quizzes[currentTopic] ?: listOf()
+        // If there is no valid topic ID, we return to MainActivity
+        if (topicId == -1) {
+            finish()
+            return
+        }
+
+        // Fetch the questions using the repository
+        questions = QuizApp.instance.repository.getQuizzesForTopic(topicId)
 
         // Get the selected answer index from the intent
         val selectedAnswerIndex = intent.getIntExtra("SELECTED_ANSWER_INDEX", -1)
@@ -37,10 +43,8 @@ class AnswerActivity : AppCompatActivity() {
         }
 
         // Update UI with the selected and correct answers
-        findViewById<TextView>(R.id.yourAnswerTextView).text =
-            questions[currentQuestionIndex].options[selectedAnswerIndex]
-        findViewById<TextView>(R.id.correctAnswerTextView).text =
-            questions[currentQuestionIndex].options[correctAnswerIndex]
+        findViewById<TextView>(R.id.yourAnswerTextView).text = questions[currentQuestionIndex].answers[selectedAnswerIndex]
+        findViewById<TextView>(R.id.correctAnswerTextView).text = questions[currentQuestionIndex].answers[correctAnswerIndex]
 
         // Calculate and display the cumulative score and total questions
         val totalQuestions = questions.size
@@ -48,7 +52,7 @@ class AnswerActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.scoreTextView).text = cumulativeScoreText
 
         // Setup the Next/Finish button
-        val nextFinishButton = findViewById<Button>(R.id.nextFinishButton)
+        val nextFinishButton: Button = findViewById(R.id.nextFinishButton)
         setupButtonBehavior(nextFinishButton)
     }
 
@@ -58,7 +62,7 @@ class AnswerActivity : AppCompatActivity() {
             button.setOnClickListener {
                 // Move to the next question
                 val intent = Intent(this, QuestionActivity::class.java).apply {
-                    putExtra("TOPIC_NAME", currentTopic)
+                    putExtra("TOPIC_ID", topicId)
                     putExtra("QUESTION_INDEX", currentQuestionIndex + 1)
                     putExtra("SCORE", score) // Pass the current score to the next question
                 }

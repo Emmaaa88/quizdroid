@@ -33,7 +33,13 @@ object QuizData {
                 options = listOf("3x10^8 m/s", "2x10^8 m/s", "1x10^8 m/s", "4x10^8 m/s"),
                 correctAnswerIndex = 0
             )
+        ),
+        "Marvel Super Heroes" to listOf(
+            Question(
+                text = "What is the version?",
+                options = listOf("1", "2", "3", "4"),
+                correctAnswerIndex = 1
+            )
         )
-        // Add more topics and questions as needed
     )
 }
