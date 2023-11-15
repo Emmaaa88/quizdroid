@@ -65,6 +65,7 @@ class QuestionActivity : AppCompatActivity() {
         }
     }
 
+
     private fun displayQuestion(questionIndex: Int) {
         val question = questions[questionIndex].questionText
         findViewById<TextView>(R.id.questionTextView).text = question
