@@ -14,19 +14,23 @@ import android.view.View
 class QuestionActivity : AppCompatActivity() {
     private var currentQuestionIndex = 0
     private lateinit var questions: List<Quiz>
-    private var topicId: Int = 0
+    private var topicTitle: String? = null
     private var score = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
 
-        // Assuming that the topic ID is passed as an intent extra
-        topicId = intent.getIntExtra("TOPIC_ID", -1)
-        if (topicId == -1) finish() // If there's no valid topic ID, end the activity
+        // Retrieve the topic title from the intent
+        topicTitle = intent.getStringExtra("TOPIC_TITLE")
+        if (topicTitle == null) {
+            Toast.makeText(this, "No topic selected", Toast.LENGTH_SHORT).show()
+            finish() // End the activity if there's no valid topic title
+            return
+        }
 
-        // Use the repository to fetch questions for the topic
-        questions = QuizApp.instance.repository.getQuizzesForTopic(topicId)
+        // Fetch the questions for the topic using the title
+        questions = QuizApp.instance.repository.getQuizzesForTopic(topicTitle!!)
         currentQuestionIndex = intent.getIntExtra("QUESTION_INDEX", 0)
 
         displayQuestion(currentQuestionIndex)
@@ -85,7 +89,6 @@ class QuestionActivity : AppCompatActivity() {
 
     private fun navigateToQuestion(questionIndex: Int) {
         val intent = Intent(this, QuestionActivity::class.java).apply {
-            putExtra("TOPIC_ID", topicId)
             putExtra("QUESTION_INDEX", questionIndex)
             putExtra("SCORE", score) // Pass along the current score
         }
@@ -97,7 +100,7 @@ class QuestionActivity : AppCompatActivity() {
         val intent = Intent(this, AnswerActivity::class.java).apply {
             putExtra("SELECTED_ANSWER_INDEX", selectedOptionIndex)
             putExtra("QUESTION_INDEX", currentQuestionIndex)
-            putExtra("TOPIC_ID", topicId)
+            putExtra("TOPIC_TITLE", topicTitle)
             putExtra("SCORE", score)
         }
         startActivity(intent)

@@ -15,7 +15,6 @@ class PreferencesActivity : AppCompatActivity() {
 
     class PreferencesFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            // Define your preferences file here
             addPreferencesFromResource(R.xml.preferences)
         }
     }

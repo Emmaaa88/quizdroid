@@ -7,32 +7,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
 
 class TopicOverviewActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_topic_overview)
 
-        val topicId = intent.getIntExtra("TOPIC_ID", -1)
+        val topicTitle = intent.getStringExtra("TOPIC_TITLE") ?: return finish()
 
-        if (topicId == -1) {
-            finish()
-            return
-        }
+        val topic = QuizApp.instance.repository.getTopics().find { it.title == topicTitle }
+            ?: return finish()
 
-        val topicRepository = QuizApp.instance.repository
-        val topic = topicRepository.getTopics().find { it.id == topicId }
-
-        if (topic == null) {
-            finish()
-            return
-        }
-
-        findViewById<TextView>(R.id.topicDescriptionTextView).text = topic.longDescription
+        findViewById<TextView>(R.id.topicDescriptionTextView).text = topic.desc
 
         val beginButton: Button = findViewById(R.id.beginButton)
         beginButton.setOnClickListener {
-            val intent = Intent(this, QuestionActivity::class.java)
-            intent.putExtra("TOPIC_ID", topic.id)
+            val intent = Intent(this, QuestionActivity::class.java).apply {
+                putExtra("TOPIC_TITLE", topic.title)
+            }
             startActivity(intent)
         }
     }

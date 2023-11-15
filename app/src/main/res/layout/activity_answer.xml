@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- TextView for user's selected answer -->
     <TextView
         android:id="@+id/yourAnswerTextView"
         android:layout_width="wrap_content"
@@ -14,7 +13,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
-    <!-- TextView for correct answer -->
     <TextView
         android:id="@+id/correctAnswerTextView"
         android:layout_width="wrap_content"
@@ -25,7 +23,6 @@
         android:layout_marginTop="24dp"
         android:layout_centerHorizontal="true"/>
 
-    <!-- TextView for score -->
     <TextView
         android:id="@+id/scoreTextView"
         android:layout_width="wrap_content"
@@ -36,7 +33,6 @@
         android:layout_marginTop="24dp"
         android:layout_centerHorizontal="true"/>
 
-    <!-- Button for navigating to the next question or finishing the quiz -->
     <Button
         android:id="@+id/nextFinishButton"
         android:layout_width="wrap_content"
