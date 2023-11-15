@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // No need to re-instantiate the repository since it's already done in QuizApp
         topics = QuizApp.instance.repository.getTopics()
 
         val listView: ListView = findViewById(R.id.listView)
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
         listView.adapter = adapter
 
         listView.setOnItemClickListener { _, _, position, _ ->
-            // Start the TopicOverviewActivity and pass the selected topic's title
             val intent = Intent(this, TopicOverviewActivity::class.java).apply {
                 putExtra("TOPIC_TITLE", topics[position].title)
             }

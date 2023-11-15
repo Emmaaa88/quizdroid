@@ -21,15 +21,13 @@ class QuestionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
 
-        // Retrieve the topic title from the intent
         topicTitle = intent.getStringExtra("TOPIC_TITLE")
         if (topicTitle == null) {
             Toast.makeText(this, "No topic selected", Toast.LENGTH_SHORT).show()
-            finish() // End the activity if there's no valid topic title
+            finish()
             return
         }
 
-        // Fetch the questions for the topic using the title
         questions = QuizApp.instance.repository.getQuizzesForTopic(topicTitle!!)
         currentQuestionIndex = intent.getIntExtra("QUESTION_INDEX", 0)
 

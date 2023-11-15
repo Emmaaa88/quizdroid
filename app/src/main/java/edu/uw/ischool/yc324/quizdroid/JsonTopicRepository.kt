@@ -17,14 +17,14 @@ data class Topic(
 
 data class Question(
     val text: String,
-    val answer: String, // 这里改为 String，因为 JSON 中是一个数字的字符串
+    val answer: String,
     val answers: List<String>
 )
 
 data class Quiz(
     val questionText: String,
     val answers: List<String>,
-    val correctAnswerIndex: Int // 索引从 0 开始，对应于 Kotlin 的 List 索引
+    val correctAnswerIndex: Int
 )
 
 class JsonTopicRepository(context: Context, private val gson: Gson) : TopicRepository {
@@ -55,7 +55,6 @@ class JsonTopicRepository(context: Context, private val gson: Gson) : TopicRepos
     override fun getQuizzesForTopic(topicTitle: String): List<Quiz> {
         val topic = _topics.find { it.title == topicTitle }
         return topic?.questions?.map { question ->
-            // 注意，这里减去 1 是因为 JSON 中答案是从 1 开始计数的
             Quiz(question.text, question.answers, question.answer.toInt() - 1)
         } ?: emptyList()
     }
