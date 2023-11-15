@@ -33,6 +33,7 @@ class JsonTopicRepository(context: Context, private val gson: Gson) : TopicRepos
     }
 
     private fun loadTopics(context: Context): List<Topic> {
+           Log.i("-------------","+++++="+context.filesDir)
         val jsonFile = File(context.filesDir, "questions.json")
         if (!jsonFile.exists()) {
             Log.e("JsonTopicRepository", "JSON file not found")
