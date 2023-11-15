@@ -2,62 +2,24 @@ package edu.uw.ischool.yc324.quizdroid
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.File
-import android.content.Context
-import android.util.Log
-import com.google.gson.JsonSyntaxException
+import java.net.URL
 
+class JsonTopicRepository : TopicRepository {
+    private var topics: List<Topic>? = null
 
-data class Topic(
-    val title: String,
-    val desc: String,
-    val questions: List<Question>
-)
-
-data class Question(
-    val text: String,
-    val answer: String,
-    val answers: List<String>
-)
-
-data class Quiz(
-    val questionText: String,
-    val answers: List<String>,
-    val correctAnswerIndex: Int
-)
-
-class JsonTopicRepository(context: Context, private val gson: Gson) : TopicRepository {
-    private val _topics: List<Topic> by lazy {
-        loadTopics(context)
-    }
-
-    private fun loadTopics(context: Context): List<Topic> {
-        val jsonFile = File(context.filesDir, "questions.json")
-
-        if (!jsonFile.exists()) {
-            Log.d("JsonTopicRepository", "FilesDir: ${context.filesDir.absolutePath}")
-
-            Log.e("JsonTopicRepository", "JSON file not found")
-            return emptyList()
-        }
-
-        return try {
-            val jsonText = jsonFile.readText()
-            gson.fromJson(jsonText, object : TypeToken<List<Topic>>() {}.type)
-        } catch (e: JsonSyntaxException) {
-            Log.e("JsonTopicRepository", "Error parsing JSON", e)
-            emptyList()
-        }
+    init {
+        // Placeholder for actual JSON loading logic
+        val jsonUrl = "http://tednewardsandbox.site44.com/questions.json" // This URL is hardcoded for now
+        val jsonText = URL(jsonUrl).readText()
+        val gson = Gson()
+        topics = gson.fromJson(jsonText, object : TypeToken<List<Topic>>() {}.type)
     }
 
     override fun getTopics(): List<Topic> {
-        return _topics
+        return topics ?: emptyList()
     }
 
-    override fun getQuizzesForTopic(topicTitle: String): List<Quiz> {
-        val topic = _topics.find { it.title == topicTitle }
-        return topic?.questions?.map { question ->
-            Quiz(question.text, question.answers, question.answer.toInt() - 1)
-        } ?: emptyList()
+    override fun getQuizzesForTopic(topicId: Int): List<Quiz> {
+        return topics?.find { it.id == topicId }?.quizzes ?: emptyList()
     }
 }
