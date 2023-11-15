@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var topics: List<Topic>
@@ -13,7 +14,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Access the repository to get the topics
+        QuizApp.instance.repository = JsonTopicRepository(this)
+
         topics = QuizApp.instance.repository.getTopics()
 
         val listView: ListView = findViewById(R.id.listView)
@@ -22,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(this, TopicOverviewActivity::class.java)
-            intent.putExtra("TOPIC_ID", topics[position].id)
+            intent.putExtra("TOPIC_TITLE", topics[position].title)
             startActivity(intent)
         }
     }

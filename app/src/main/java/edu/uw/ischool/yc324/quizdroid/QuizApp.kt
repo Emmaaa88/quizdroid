@@ -8,12 +8,11 @@ data class Quiz(val questionText: String, val answers: List<String>, val correct
 
 class QuizApp : Application() {
     lateinit var repository: TopicRepository
-        private set
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-        repository = MemoryTopicRepository()
+        repository = JsonTopicRepository(this)
         Log.d("QuizApp", "Application is starting")
     }
 

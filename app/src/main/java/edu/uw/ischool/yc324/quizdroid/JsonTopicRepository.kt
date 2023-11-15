@@ -2,17 +2,32 @@ package edu.uw.ischool.yc324.quizdroid
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.net.URL
+import java.io.File
+import android.content.Context
 
-class JsonTopicRepository : TopicRepository {
+
+data class Question(
+    val text: String,
+    val answer: String,
+    val answers: List<String>
+)
+
+data class Topic(
+    val title: String,
+    val desc: String,
+    val questions: List<Question>
+)
+
+class JsonTopicRepository(context: Context) : TopicRepository {
     private var topics: List<Topic>? = null
 
     init {
-        // Placeholder for actual JSON loading logic
-        val jsonUrl = "http://tednewardsandbox.site44.com/questions.json" // This URL is hardcoded for now
-        val jsonText = URL(jsonUrl).readText()
-        val gson = Gson()
-        topics = gson.fromJson(jsonText, object : TypeToken<List<Topic>>() {}.type)
+        val jsonFile = File(context.filesDir, "questions.json")
+        if (jsonFile.exists()) {
+            val jsonText = jsonFile.readText()
+            val gson = Gson()
+            topics = gson.fromJson(jsonText, object : TypeToken<List<Topic>>() {}.type)
+        }
     }
 
     override fun getTopics(): List<Topic> {
@@ -20,6 +35,6 @@ class JsonTopicRepository : TopicRepository {
     }
 
     override fun getQuizzesForTopic(topicId: Int): List<Quiz> {
-        return topics?.find { it.id == topicId }?.quizzes ?: emptyList()
+        return emptyList()
     }
 }
