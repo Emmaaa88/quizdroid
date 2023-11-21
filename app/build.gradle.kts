@@ -46,4 +46,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation ("com.google.code.gson:gson:2.8.6")
     implementation ("androidx.preference:preference:1.1.1")
+    implementation ("androidx.work:work-runtime-ktx:2.7.1")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
+
+
 }
